@@ -1,0 +1,7 @@
+language: c
+compiler:
+  - gcc
+  - clang
+dist: trusty    
+script: sudo apt-get install libuv1-dev && cd build && rm CMakeCache.txt && cmake .. && make 
+sudo: required
