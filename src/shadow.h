@@ -20,7 +20,7 @@
 #define KEEP_READ 1
 
 //#define PASS "hourui.me@gmail.com"
-#define DEFAULT_IDLE_TIMEOUT (60 * 1000)
+
 // struct
 typedef struct
 {
@@ -85,11 +85,11 @@ typedef struct
 
 typedef struct
 {
-    const char * pass, * method;
+    char * pass, * method;
     struct
     {
-        const char * ip;
-        const unsigned int port;
+        char * ip;
+        unsigned int port;
     } local, remote;
     unsigned int idle_timeout;
 } config_t;

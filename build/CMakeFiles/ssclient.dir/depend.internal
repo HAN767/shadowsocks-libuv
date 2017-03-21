@@ -22,6 +22,7 @@ CMakeFiles/ssclient.dir/src/handshake.c.o
 CMakeFiles/ssclient.dir/src/localmain.c.o
  /home/lzhou/github.com/zhou0/tinysocks/archive/tinysocks-master/src/config.h
  /home/lzhou/github.com/zhou0/tinysocks/archive/tinysocks-master/src/localmain.c
+ /home/lzhou/github.com/zhou0/tinysocks/archive/tinysocks-master/src/localmain.h
  /home/lzhou/github.com/zhou0/tinysocks/archive/tinysocks-master/src/localser.h
  /home/lzhou/github.com/zhou0/tinysocks/archive/tinysocks-master/src/s5.h
  /home/lzhou/github.com/zhou0/tinysocks/archive/tinysocks-master/src/shadow.h

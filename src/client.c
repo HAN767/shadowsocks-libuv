@@ -57,41 +57,6 @@ static int conn_cycle(const char *who, conn *a, conn *b);
 static void conn_close(conn *c);
 static int conn_connect(conn *c);
 
-//void
-//client_connect_cb(uv_stream_t * listener, int status)
-//{
-//    
-//    shadow_t    * shadow = shadow_new();
-//    uv_stream_t * stream = (uv_stream_t *)shadow->client;
-
-    // init first handshack
-//    handshake_t * hands  = calloc(1, sizeof(handshake_t));
-//    hands ->step         = 1;
-//    hands ->data         = calloc(1, socks5_max_len);
-//    shadow->data         = hands;
-
-//    RAND_bytes(shadow->cipher->iv, (int)shadow->cipher->ivl);
-
-//    do
-//    {
-//        if (status)                                           break;
-//        if (uv_tcp_init     (listener->loop, shadow->client)) break;
-//        if (uv_accept       (listener, stream))               break;
-//        if (uv_tcp_nodelay  (shadow->client, 1))              break;
-//      if (uv_tcp_keepalive(shadow->client, 1, 60))          break;
-//        if (uv_read_start   (stream,
-//                             handshake_alloc_cb,
-//                             handshake_read_cb))             break;
-//        return;
-//
-//    }
-//    while (0);
-//
-//    shadow_free(shadow);
-//    printf("%s\n", uv_strerror(uv_last_error(listener->loop)));
-//      printf("%s\n", uv_strerror(status));
-//}
-
 void
 client_read_cb(uv_stream_t * stream, ssize_t nread, const uv_buf_t * buf)
 {

@@ -10,8 +10,6 @@
     <File Name="../src/crypt.c"/>
     <File Name="../src/encrypt.c"/>
     <File Name="../src/handshake.c"/>
-    <File Name="../src/md5.c"/>
-    <File Name="../src/rc4.c" ExcludeProjConfig=""/>
     <File Name="../src/remote.c"/>
     <File Name="../src/server.c"/>
     <File Name="../src/shadow.c"/>
@@ -25,8 +23,6 @@
   <VirtualDirectory Name="include">
     <File Name="../src/crypt.h"/>
     <File Name="../src/encrypt.h"/>
-    <File Name="../src/md5.h"/>
-    <File Name="../src/rc4.h"/>
     <File Name="../src/server.h"/>
     <File Name="../src/shadow.h"/>
     <File Name="../src/utils.h"/>

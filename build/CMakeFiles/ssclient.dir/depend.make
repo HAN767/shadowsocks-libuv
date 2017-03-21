@@ -21,6 +21,7 @@ CMakeFiles/ssclient.dir/src/handshake.c.o: ../src/shadow.h
 
 CMakeFiles/ssclient.dir/src/localmain.c.o: ../src/config.h
 CMakeFiles/ssclient.dir/src/localmain.c.o: ../src/localmain.c
+CMakeFiles/ssclient.dir/src/localmain.c.o: ../src/localmain.h
 CMakeFiles/ssclient.dir/src/localmain.c.o: ../src/localser.h
 CMakeFiles/ssclient.dir/src/localmain.c.o: ../src/s5.h
 CMakeFiles/ssclient.dir/src/localmain.c.o: ../src/shadow.h

@@ -6,15 +6,15 @@
 
 #IncludeRegexTransform: 
 
-/home/lzhou/github.com/zhou0/tinysocks/archive/tinysocks-master/src/client.h
-
-/home/lzhou/github.com/zhou0/tinysocks/archive/tinysocks-master/src/config.h
-
-/home/lzhou/github.com/zhou0/tinysocks/archive/tinysocks-master/src/localser.c
+/home/lzhou/github.com/zhou0/tinysocks/archive/tinysocks-master/src/client.c
+utils.h
+/home/lzhou/github.com/zhou0/tinysocks/archive/tinysocks-master/src/utils.h
+shadow.h
+/home/lzhou/github.com/zhou0/tinysocks/archive/tinysocks-master/src/shadow.h
 localser.h
 /home/lzhou/github.com/zhou0/tinysocks/archive/tinysocks-master/src/localser.h
-client.h
-/home/lzhou/github.com/zhou0/tinysocks/archive/tinysocks-master/src/client.h
+
+/home/lzhou/github.com/zhou0/tinysocks/archive/tinysocks-master/src/config.h
 
 /home/lzhou/github.com/zhou0/tinysocks/archive/tinysocks-master/src/localser.h
 utils.h

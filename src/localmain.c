@@ -8,6 +8,7 @@
 //#include <getopt.h>
 #include "utils.h"
 #include "shadow.h"
+#include "localmain.h"
 #include "localser.h"
 
 static const char *progname = __FILE__; /* Reset in main(). */
@@ -103,6 +104,8 @@ int main(int argc, char *argv[])
     config_t conf;
     memset(&conf, 0, sizeof(conf));
     conf.idle_timeout = DEFAULT_IDLE_TIMEOUT;
+    conf.local.port = DEFAULT_BIND_PORT;
+    conf.remote.port = DEFAULT_BIND_PORT;
     parse(&conf,argc, argv);
 
 //  signal(SIGPIPE, SIG_IGN);
