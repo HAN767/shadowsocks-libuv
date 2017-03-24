@@ -234,7 +234,7 @@ static void client_established_read_cb(uv_stream_t* stream, ssize_t nread, const
         return;
     }
 
-    // LOGI("Writed to remote");
+    //pr_info("Writed to remote");
 }
 
 //static uv_buf_t established_alloc_cb(uv_handle_t* handle, size_t suggested_size)
@@ -385,7 +385,7 @@ static int do_handshake(uv_stream_t *stream)
                 FATAL("malloc() failed!");
             }
             resolver->data = ctx; // We need to locate back the stream
-            LOGI("Domain is: %s", domain);
+           pr_info("Domain is: %s", domain);
             n = uv_getaddrinfo(stream->loop, resolver, client_handshake_domain_resolved, domain, NULL, NULL);
             if (n)
             {
@@ -401,7 +401,7 @@ static int do_handshake(uv_stream_t *stream)
         }
         else     // Unsupported addrtype
         {
-            LOGI("addrtype unknown, closing");
+           pr_info("addrtype unknown, closing");
             uv_close((uv_handle_t*)stream, handshake_client_close_cb);
             return -1;
         }
@@ -485,7 +485,7 @@ static void client_handshake_domain_resolved(uv_getaddrinfo_t *resolver, int sta
 //		if (uv_last_error(ctx->client.loop).code == UV_ENOENT) {
         if (status == UV_ENOENT)
         {
-            LOGI("Resolve error, NXDOMAIN");
+           pr_info("Resolve error, NXDOMAIN");
         }
         else
         {
@@ -529,7 +529,7 @@ static void client_handshake_domain_resolved(uv_getaddrinfo_t *resolver, int sta
 //static void client_handshake_read_cb(uv_stream_t* stream, ssize_t nread, uv_buf_t buf)
 static void client_handshake_read_cb(uv_stream_t* stream, ssize_t nread, const uv_buf_t* buf)
 {
-    LOGI("%s %ld",__FUNCTION__,nread);
+   pr_info("%s %ld",__FUNCTION__,nread);
     server_ctx *ctx = (server_ctx *)stream->data;
 
     if (nread < 0)
@@ -685,18 +685,18 @@ int main(int argc, char *argv[])
     uv_set_process_title(process_title);
     free(process_title);
 
-    LOGI(WELCOME_MESSAGE);
+   pr_info(WELCOME_MESSAGE);
 
     if (crypt_method == METHOD_SHADOWCRYPT)
-        LOGI("Using shadowcrypt crypto");
+       pr_info("Using shadowcrypt crypto");
     else if (crypt_method == METHOD_RC4)
-        LOGI("Using RC4 crypto");
+       pr_info("Using RC4 crypto");
     else
         FATAL("Crypto unknown!");
 
     make_encryptor(NULL, &crypto, crypt_method, password);
 
-    LOGI("Crypto ready");
+   pr_info("Crypto ready");
 
     int n;
     uv_loop_t *loop = uv_default_loop();
@@ -718,7 +718,7 @@ int main(int argc, char *argv[])
     n = uv_listen((uv_stream_t*)(void *)&listener, 5, connect_cb);
     if (n)
         SHOW_UV_ERROR_AND_EXIT(loop);
-    LOGI("Listening on %s:%d", server_listen, server_port);
+   pr_info("Listening on %s:%d", server_listen, server_port);
 
 #ifndef NDEBUG
     setup_signal_handler(loop);

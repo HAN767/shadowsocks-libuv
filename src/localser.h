@@ -12,11 +12,5 @@ typedef struct {
   uv_loop_t *loop;
 } server_state;
 
-int can_auth_none(const server_ctx *sx, const client_ctx *cx);
-int can_auth_passwd(const server_ctx *sx, const client_ctx *cx);
-int can_access(const server_ctx *sx,
-               const client_ctx *cx,
-               const struct sockaddr *addr);
-int server_run(const config_t *cf, uv_loop_t *loop);
-int cipher_init(const config_t *cf);              
+int server_run(const config_t *cf, uv_loop_t *loop);          
 #endif /* !LOCALSER_H_ */

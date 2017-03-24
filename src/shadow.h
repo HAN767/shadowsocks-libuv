@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <openssl/evp.h>
 #include <openssl/rand.h>
-#include "s5.h"
+
 
 #define SS_ERROR    -1
 #define KEEP_READ 1
@@ -62,7 +62,8 @@ typedef struct
 {
 
     size_t        keyl;
-    uint8_t    *  key;
+//    uint8_t    *  key;
+    unsigned char *key;
     const EVP_CIPHER     * type;
 
     struct
@@ -94,24 +95,7 @@ typedef struct
     unsigned int idle_timeout;
 } config_t;
 
-//cipher_t * cipher_new    (const char *);
-cipher_t * cipher_new    (const config_t *conf);
-void       cipher_free   (cipher_t   *);
-char     * cipher_encrypt(shadow_t   *, size_t *, char *, size_t);
-char     * cipher_decrypt(shadow_t   *, size_t *, char *, size_t);
 
-/* client */
-void client_close_cb   (uv_handle_t   *);
-void client_read_cb   (uv_stream_t   *, ssize_t, const uv_buf_t *);
-void client_write_cb   (uv_write_t    *, int);
-void client_connect_cb (uv_stream_t   *, int);
-void client_shutdown_cb(uv_shutdown_t *, int);
-
-void remote_close_cb   (uv_handle_t   *);
-void remote_read_cb   (uv_stream_t   *, ssize_t, const uv_buf_t *);
-void remote_write_cb   (uv_write_t    *, int);
-void remote_connect_cb (uv_connect_t  *, int);
-void remote_shutdown_cb(uv_shutdown_t *, int);
 
 /* connection */
 //shadow_t * shadow_new     (void);
@@ -121,26 +105,7 @@ void       shadow_free_cb (uv_handle_t *);
 void       shadow_timer_cb(uv_timer_t  *, int);
 //uv_buf_t   shadow_alloc_cb(uv_handle_t *, size_t);
 void       shadow_alloc_cb(uv_handle_t *, size_t,uv_buf_t *);
-
-
-/* handshake */
-//uv_buf_t handshake_alloc_cb(uv_handle_t *, size_t);
-void     handshake_alloc_cb(uv_handle_t *, size_t, uv_buf_t *);
-void     handshake_read_cb(uv_stream_t *, ssize_t, const uv_buf_t *);
-void     handshake_write_cb(uv_write_t  *, int);
-int      handshake         (uv_stream_t *);
-
-/* phony */
-void     fakereply_write_cb(uv_write_t  *, int);
-
-
 void     shadow_write_cb(uv_write_t  *, int);
-/* local.c */
-const char *_getprogname(void);
-#if !HAVE_UNISTD_H
-extern char *optarg;
-int getopt(int argc, char **argv, const char *options);
-#endif
 //void   connect_client_cb(uv_stream_t *, int);
 //
 //
@@ -203,11 +168,4 @@ typedef struct {
   } t;
 } conn;
 
-typedef struct client_ctx {
-  unsigned int state;
-  server_ctx *sx;  /* Backlink to owning server context. */
-  s5_ctx parser;  /* The SOCKS protocol parser. */
-  conn incoming;  /* Connection with the SOCKS client. */
-  conn outgoing;  /* Connection with upstream. */
-} client_ctx;
 #endif /* defined(_SHADOW_H) */

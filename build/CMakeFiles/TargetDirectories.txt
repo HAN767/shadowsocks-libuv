@@ -1,3 +1,2 @@
-/home/lzhou/github.com/zhou0/tinysocks/archive/tinysocks-master/build/CMakeFiles/ssclient.dir
-/home/lzhou/github.com/zhou0/tinysocks/archive/tinysocks-master/build/CMakeFiles/ssserver.dir
-/home/lzhou/github.com/zhou0/tinysocks/archive/tinysocks-master/build/CMakeFiles/sstest.dir
+/home/lizhou/tinysocks/build/CMakeFiles/ssclient.dir
+/home/lizhou/tinysocks/build/CMakeFiles/ssserver.dir

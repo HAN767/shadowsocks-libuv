@@ -6,43 +6,67 @@
 //  Copyright (c) 2014年 Cube. All rights reserved.
 //
 
-#include "shadow.h"
+
+#include <string.h>
+#include "utils.h"
 #include "crypt.h"
 
-//config_t conf;
+extern config_t conf;
 
 cipher_t * cipher_new(const config_t * conf)
 {
     OpenSSL_add_all_algorithms();
 
-//  const char * name;
-//  name = "aes-128-cfb";
-//  name = "bf-cfb";
+    // const char * name;
+    // name = "aes-128-cfb";
+    // name = "bf-cfb";
+    cipher_t * cipher = calloc(1, sizeof(cipher_t));
 
-    cipher_t *
-    cipher       = calloc(1, sizeof(cipher_t));
-    cipher->type = EVP_get_cipherbyname(conf->method);
-    cipher->keyl = EVP_CIPHER_key_length(cipher->type);
-    cipher->key  = malloc(cipher->keyl);
+    cipher -> type = EVP_get_cipherbyname(conf -> method);
+    cipher -> keyl = EVP_CIPHER_key_length(cipher -> type);
+    pr_info("%s %zu", __FUNCTION__,cipher->keyl);
+    cipher -> key  = malloc(cipher -> keyl);
 
-    EVP_CIPHER_CTX_init(&cipher->encrypt.ctx);
-    EVP_CIPHER_CTX_init(&cipher->decrypt.ctx);
-
-    EVP_BytesToKey(cipher->type, EVP_md5(), NULL,
-                   (uint8_t *)conf->pass, (int)strlen(conf->pass), 1,
-                   cipher->key, NULL);
-
+    EVP_CIPHER_CTX_init(&cipher -> encrypt.ctx);
+    EVP_CIPHER_CTX_init(&cipher -> decrypt.ctx);
+    //EVP_BytesToKey(cipher -> type, EVP_md5(), NULL, (uint8_t *) conf -> pass, (int) strlen(conf -> pass), 1,
+    //                   cipher -> key, NULL);
+    EVP_BytesToKey(cipher -> type, EVP_md5(), NULL,  conf -> pass, (int) strlen(conf -> pass), 1,
+                       cipher -> key, NULL); 
+    pr_info("%s %zu", __FUNCTION__,strlen(cipher->key));
+    //pr_info("%s %s",__FUNCTION__, cipher->key);
+    //pr_info("%s %zu", __FUNCTION__,sizeof(cipher->key));
+    dump("KEY", cipher->key, cipher->keyl);
     return cipher;
-}
+} 
 
 void cipher_free(cipher_t * cipher)
 {
-    if (!cipher) return;
-    if (cipher->key) free(cipher->key);
+    if (!cipher)
+    {
+        return;
+    }
+
+    if (cipher -> key)
+    {
+        free(cipher -> key);
+    }
+
     free(cipher);
 }
 
-char * cipher_encrypt(shadow_t * shadow, size_t * encryptl,
+void
+dump(unsigned char *tag, unsigned char *text, int len)
+{
+    int i;
+    printf("%s: ", tag);
+    for (i = 0; i < len; i++)
+        printf("0x%02x ", text[i]);
+    printf("\n");
+}
+
+
+uv_buf_t cipher_encrypt(shadow_t * shadow, size_t * encryptl,
                       char     *  plain, size_t     plainl)
 {
     cipher_t * cipher   = shadow->cipher;
@@ -51,10 +75,10 @@ char * cipher_encrypt(shadow_t * shadow, size_t * encryptl,
     uint8_t * dst;
 
 //  int i;
-
+    int ivl = 0;
     if (!cipher->encrypt.init)
     {
-        int       ivl = EVP_CIPHER_iv_length(cipher->type);
+        ivl = EVP_CIPHER_iv_length(cipher->type);
         uint8_t * iv  = malloc(ivl);
         RAND_bytes(iv, ivl);
 
@@ -94,8 +118,8 @@ char * cipher_encrypt(shadow_t * shadow, size_t * encryptl,
         dst      = (uint8_t *)encrypt;
     }
 
-    int _;
-    EVP_CipherUpdate(&cipher->encrypt.ctx, dst, &_, (uint8_t *)plain, (int)plainl);
+    int olength;
+    EVP_CipherUpdate(&cipher->encrypt.ctx, dst, &olength, (uint8_t *)plain, (int)plainl);
 //  printf("---encrypt count---\n");
 //  printf("%d %lu %lu\n", _, *encryptl, plainl);
 
@@ -109,10 +133,10 @@ char * cipher_encrypt(shadow_t * shadow, size_t * encryptl,
 
     free(plain);
 
-    return encrypt;
+    return uv_buf_init(encrypt,ivl + olength);
 }
 
-char * cipher_decrypt(shadow_t * shadow,  size_t *   plainl,
+uv_buf_t  cipher_decrypt(shadow_t * shadow,  size_t *   plainl,
                       char     * encrypt, size_t   encryptl)
 {
     cipher_t      * cipher = shadow->cipher;
@@ -121,10 +145,10 @@ char * cipher_decrypt(shadow_t * shadow,  size_t *   plainl,
     uint8_t * src;
 
 //  int i;
-
+    int ivl = 0;
     if (!cipher->decrypt.init)
     {
-        int       ivl = EVP_CIPHER_iv_length(cipher->type);
+        ivl = EVP_CIPHER_iv_length(cipher->type);
         uint8_t * iv  = malloc(ivl);
         memcpy(iv, encrypt, ivl);
 
@@ -153,8 +177,8 @@ char * cipher_decrypt(shadow_t * shadow,  size_t *   plainl,
 
     }
 
-    int _;
-    EVP_CipherUpdate(&cipher->decrypt.ctx, (uint8_t *)plain, &_, src, (int)*plainl);
+    int olength;
+    EVP_CipherUpdate(&cipher->decrypt.ctx, (uint8_t *)plain, &olength, src, (int)*plainl);
 
 //  printf("---decrypt plain---\n");
 //  for (i = 0; i < 5; i++) printf("%02x ", (unsigned char)plain[i]);
@@ -162,5 +186,6 @@ char * cipher_decrypt(shadow_t * shadow,  size_t *   plainl,
 
     free(encrypt);
 
-    return plain;
+//    return plain;
+    return uv_buf_init(plain, encryptl - ivl);
 }

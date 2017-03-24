@@ -6,9 +6,12 @@
 //  Copyright (c) 2014年 Cube. All rights reserved.
 //
 #include <string.h>
+#include "utils.h"
 #include "shadow.h"
+#include "handshake.h"
+#include "remote.h"
 
-config_t conf;
+extern config_t conf;
 
 /*
 
@@ -167,6 +170,7 @@ handshake_alloc_cb(uv_handle_t * handle, size_t suggest_size, uv_buf_t * buf)
 void
 handshake_read_cb(uv_stream_t * stream, ssize_t nread, const uv_buf_t * buf)
 {
+    pr_info("%s %d", __FUNCTION__,nread);
     shadow_t    * shadow = stream->data;
     handshake_t * hands  = shadow->data;
 
@@ -204,24 +208,6 @@ handshake_write_cb(uv_write_t * write, int status)
     if (status) uv_close((uv_handle_t *)shadow->client, shadow_free_cb);
 }
 
-void
-fakereply_write_cb(uv_write_t * write, int status)
-{
-    shadow_t * shadow = write->handle->data;
-    if (shadow->data) free(shadow->data);
-
-    shadow->data = NULL;
-    shadow->size = 0;
-
-    if (!status) uv_read_start((uv_stream_t *)shadow->client,
-                                   shadow_alloc_cb,
-                                   client_read_cb);
-
-    free(write->data);
-    free(write);
-
-    if (status) uv_close((uv_handle_t *)shadow->client, shadow_free_cb);
-}
 
 
 

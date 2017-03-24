@@ -28,57 +28,10 @@
 #include <string.h>
 #include <time.h>
 #include <uv.h>
-#include "config.h"
+//#include "config.h"
 
-extern struct encryptor crypto;
-#define STR(x) #x
-#define TOSTR(x) STR(x)
 
-#define LOGI(format, ...) do {\
-						  time_t now = time(NULL);\
-						  char timestr[20];\
-						  strftime(timestr, 20, TIME_FORMAT, localtime(&now));\
-                          fprintf(stderr, "\e[01;32m %s INFO: \e[0m" format "\n", timestr, ##__VA_ARGS__);}\
-                          while(0)
-#define LOGE(format, ...) do {\
-						  time_t now = time(NULL);\
-						  char timestr[20];\
-						  strftime(timestr, 20, TIME_FORMAT, localtime(&now));\
-                          fprintf(stderr, "\e[01;35m %s ERROR: \e[0m" format " on File: %s Line: %s\n", timestr, ##__VA_ARGS__, __FILE__, TOSTR(__LINE__));}\
-                          while(0)
-#define LOGCONN(stream, message) do {\
-                            struct sockaddr_storage remote_addr;\
-                            memset(&remote_addr, 0, sizeof(remote_addr));\
-                            int namelen = sizeof(remote_addr);\
-                            if (uv_tcp_getpeername((stream), (struct sockaddr *)&remote_addr, &namelen))\
-                                break;\
-                            char *ip_str = sockaddr_to_str(&remote_addr);\
-                            if (!ip_str)\
-                              FATAL("unknown address type");\
-                            LOGI(message, ip_str);\
-                            free(ip_str);\
-                        } while (0)
-#define FATAL(format, ...) do {\
-						  time_t now = time(NULL);\
-						  char timestr[20];\
-						  strftime(timestr, 20, TIME_FORMAT, localtime(&now));\
-                          fprintf(stderr, "\e[01;31m %s FATAL: \e[0m" format " on File: %s Line: %s\n", timestr, ##__VA_ARGS__, __FILE__, TOSTR(__LINE__));exit(1);}\
-                          while(0)
-#define SHOW_UV_ERROR(loop) do {LOGE("libuv error: %s", "");} while (0)
-#define SHOW_UV_ERROR_AND_EXIT(loop) do {SHOW_UV_ERROR(loop);LOGE("Fatal error, terminating... ");exit(1);} while (0)
-//#define POINT_TO_STRUCT(field_ptr, field_name, struct_name) ((struct_name *)((char *)(field_ptr) - offsetof(struct_name, field_name)))
-#define SHIFT_BYTE_ARRAY_TO_LEFT(arr, offset, array_size) memmove((arr), (arr) + (offset), (array_size) - (offset))
-#define SHOW_BUFFER(buf, len) do {\
-                              for (int i=0; i<len; i++)\
-                              	putchar(buf[i]);\
-                              } while (0)
-#define HANDLE_CLOSE(handle, callback) do {\
-                                       if (!(uv_is_closing((uv_handle_t *)(void *)&ctx->remote) || uv_is_closing((uv_handle_t *)(void *)&ctx->client)))\
-                                       	   uv_close((uv_handle_t *)handle, callback);\
-                                       	} while (0)
 
-char *sockaddr_to_str(struct sockaddr_storage *addr);
-void setup_signal_handler(uv_loop_t *loop);
 #define CONTAINER_OF(ptr, type, field)                                        \
 ((type *) ((char *) (ptr) - ((char *) &((type *) 0)->field)))
 #define UNREACHABLE() CHECK(!"Unreachable code reached.")
@@ -94,7 +47,7 @@ void setup_signal_handler(uv_loop_t *loop);
 #endif
 
 /* util.c */
-static void pr_do(FILE *stream,
+void pr_do(FILE *stream,
                   const char *label,
                   const char *fmt,
                   va_list ap);

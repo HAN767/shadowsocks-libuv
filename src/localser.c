@@ -1,5 +1,8 @@
 #include "localser.h"
 #include "client.h"
+#include "handshake.h"
+
+extern config_t conf;
 
 static void do_bind(uv_getaddrinfo_t *req, int status, struct addrinfo *ai);
 static void on_connection(uv_stream_t *server, int status);
@@ -124,7 +127,8 @@ static void do_bind(uv_getaddrinfo_t *req, int status, struct addrinfo *addrs) {
     err = uv_tcp_bind(&sx->tcp_handle, &s.addr, 0);
     if (err == 0) {
       what = "uv_listen";
-      err = uv_listen((uv_stream_t *) &sx->tcp_handle, 128, on_connection);
+//      err = uv_listen((uv_stream_t *) &sx->tcp_handle, 128, on_connection);
+      err = uv_listen((uv_stream_t *) &sx->tcp_handle, 128, client_connect_cb);
     }
 
     if (err != 0) {
@@ -147,7 +151,7 @@ static void do_bind(uv_getaddrinfo_t *req, int status, struct addrinfo *addrs) {
   uv_freeaddrinfo(addrs);
 }
 
-
+/*
 static void on_connection(uv_stream_t *server, int status) {
   server_ctx *sx;
   client_ctx *cx;
@@ -159,64 +163,13 @@ static void on_connection(uv_stream_t *server, int status) {
   CHECK(0 == uv_accept(server, &cx->incoming.handle.stream));
   client_finish_init(sx, cx);
 }
+*/
 
-int can_auth_none(const server_ctx *sx, const client_ctx *cx) {
-  return 1;
-}
-
-int can_auth_passwd(const server_ctx *sx, const client_ctx *cx) {
-  return 0;
-}
-
-int can_access(const server_ctx *sx,
-               const client_ctx *cx,
-               const struct sockaddr *addr) {
-  const struct sockaddr_in6 *addr6;
-  const struct sockaddr_in *addr4;
-  const uint32_t *p;
-  uint32_t a;
-  uint32_t b;
-  uint32_t c;
-  uint32_t d;
-
-  /* TODO(bnoordhuis) Implement proper access checks.  For now, just reject
-   * traffic to localhost.
-   */
-  if (addr->sa_family == AF_INET) {
-    addr4 = (const struct sockaddr_in *) addr;
-    d = ntohl(addr4->sin_addr.s_addr);
-    return (d >> 24) != 0x7F;
-  }
-
-  if (addr->sa_family == AF_INET6) {
-    addr6 = (const struct sockaddr_in6 *) addr;
-    p = (const uint32_t *) &addr6->sin6_addr.s6_addr;
-    a = ntohl(p[0]);
-    b = ntohl(p[1]);
-    c = ntohl(p[2]);
-    d = ntohl(p[3]);
-    if (a == 0 && b == 0 && c == 0 && d == 1) {
-      return 0;  /* "::1" style address. */
-    }
-    if (a == 0 && b == 0 && c == 0xFFFF && (d >> 24) == 0x7F) {
-      return 0;  /* "::ffff:127.x.x.x" style address. */
-    }
-    return 1;
-  }
-
-  return 0;
-}
-
-int cipher_init(const config_t *cf) {
-    shadow_t    * shadow = shadow_new(cf);
-    return 0;
-}
-/*
 void
 client_connect_cb(uv_stream_t * listener, int status)
 {
     
-    shadow_t    * shadow = shadow_new();
+    shadow_t    * shadow = shadow_new(&conf); 
     uv_stream_t * stream = (uv_stream_t *)shadow->client;
 
     // init first handshack
@@ -246,4 +199,3 @@ client_connect_cb(uv_stream_t * listener, int status)
 //    printf("%s\n", uv_strerror(uv_last_error(listener->loop)));
       printf("%s\n", uv_strerror(status));
 }
-*/
